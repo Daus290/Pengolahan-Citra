@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Tugas 2: Edge Detection{% endblock %}
+{% block content %}
+
+
+<!-- hasil gambar akan disimpan ke folder static-->
+
+
+<!-- container -->
+<div class="row m-0">
+
+  <!-- Sidebar buat Operator -->
+  <div class="col-md-2 p-3 mt-2">
+    <div class="glass-box d-flex flex-column">
+      <a href="/tugas2?operator=sobel" class="btn glass-btn mb-2 {% if operator == 'sobel' %}active{% endif %}">Sobel</a>
+      <a href="/tugas2?operator=prewitt" class="btn glass-btn mb-2 {% if operator == 'prewitt' %}active{% endif %}">Prewitt</a>
+      <a href="/tugas2?operator=roberts" class="btn glass-btn mb-2 {% if operator == 'roberts' %}active{% endif %}">Roberts</a>
+      <a href="/tugas2?operator=canny" class="btn glass-btn {% if operator == 'canny' %}active{% endif %}">Canny</a>
+    </div>
+  </div>
+
+  <!-- Konten -->
+  <div class="col-md-10 p-4">
+    <div class="glass-box"> <!-- pakai glass box dari css supaya tampilan mewah -->
+      <h2 class="mb-4 text-white">Edge Detection - {{ operator|capitalize }}</h2>
+      <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="operator" value="{{ operator }}">
+        {% if filename %}
+          <input type="hidden" name="filename" value="{{ filename }}">
+        {% endif %}
+        <div class="mb-3">
+          <label class="form-label">Upload Gambar</label>
+          <input class="form-control glass-input" type="file" name="image">
+        </div>
+
+        {% if filename %}
+        <div class="mb-3">
+            <label class="form-label">Nama Gambar Saat Ini</label>
+            <input class="form-control glass-input" name="filename" value="{{ filename }}" readonly>
+        </div>
+        {% endif %}
+
+
+        {% if operator == 'canny' %} <!-- jika operator canny dipilih, maka baru harus pakai slider -->
+          <div class="mb-3">
+            <label class="form-label">Threshold Rendah: <span id="low-val">{{ threshold1 }}</span></label>
+            <input type="range" class="form-range glass-range" min="0" max="255" name="threshold1"
+                   value="{{ threshold1 }}" id="low-threshold"
+                   oninput="document.getElementById('low-val').innerText = this.value">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Threshold Tinggi: <span id="high-val">{{ threshold2 }}</span></label>
+            <input type="range" class="form-range glass-range" min="0" max="255" name="threshold2"
+                   value="{{ threshold2 }}" id="high-threshold"
+                   oninput="document.getElementById('high-val').innerText = this.value">
+          </div>
+        {% elif operator in ['sobel', 'prewitt', 'roberts'] %} <!-- operator lain tidak perlu pakai slider -->
+          <p class="text-white-50 fst-italic mt-2">
+            Operator {{ operator|capitalize }} tidak memerlukan slider threshold karena hasilnya berupa gradasi intensitas tepi
+          </p>
+        {% endif %}
+
+        <button type="submit" class="btn glass-btn text-white" id="proses-btn" disabled>Proses</button>
+      </form>
+    </div>
+
+    <script>
+      const fileInput = document.querySelector('input[name="image"]');
+      const filenameHidden = document.querySelector('input[name="filename"]');
+      const btn = document.getElementById('proses-btn');
+
+      if (fileInput) {
+        fileInput.addEventListener('change', function () {
+          if (this.files.length > 0 || filenameHidden) { // untuk operator lain, hilangkan tombol jika gambar sudah diupload
+            btn.removeAttribute('disabled');
+          } else {
+            btn.setAttribute('disabled', 'true');
+          }
+        });
+      }
+
+      if (filenameHidden) {  // untuk operator canny, aktifkan tombol jika sudah ada gambar sebelumnya supaya mudah pindah slider
+        btn.removeAttribute('disabled');
+      }
+    </script>
+
+    <!-- Preview Gambar -->
+    {% if filename %}
+      <hr class="my-4">
+      <div class="row">
+        <div class="col-md-6 text-center">
+          <h5>Gambar Asli</h5>
+          <img src="/static/{{ filename }}" class="img-preview img-thumbnail mb-3">
+        </div>
+        <div class="col-md-6 text-center">
+          <h5>Hasil {{ operator|capitalize }}</h5>
+          <img src="/static/{{ operator }}.jpg" class="img-preview img-thumbnail mb-3">
+        </div>
+      </div>
+    {% else %}
+      <p class="text-white text-center mt-4">Silakan upload gambar terlebih dahulu untuk melihat hasil deteksi tepi</p>
+    {% endif %}
+  </div>
+</div>
+<!-- end container -->
+
+{% endblock %}

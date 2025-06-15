@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Tugas 1: Thresholding{% endblock %}
+{% block content %}
+
+
+<!-- hasil gambar akan disimpan ke folder static-->
+
+
+<!-- container glass box -->
+<div class="container py-4">
+    <div class="glass-box">
+        <h2 class="mb-4">Thresholding</h2>
+
+        <form method="POST" enctype="multipart/form-data" id="threshold-form">
+            <div class="mb-3">
+                <label class="form-label">Upload Gambar</label>
+                <input class="form-control glass-input" type="file" name="image" id="image-input">
+            </div>
+
+            {% if filename %}
+            <div class="mb-3">
+                <label class="form-label">Nama Gambar Saat Ini</label>
+                <input class="form-control glass-input" name="filename" value="{{ filename }}" readonly id="filename-hidden">
+            </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label">Nilai Threshold:
+                    <span class="fw-bold" id="threshold-val">{{ threshold }}</span>
+                </label>
+                <input type="range" class="form-range glass-range" min="0" max="255" value="{{ threshold }}" name="threshold" id="threshold-slider" oninput="document.getElementById('threshold-val').innerText = this.value">
+            </div>
+
+            <p id="warning-upload" class="text-white pb-3 d-none">Silakan upload gambar terlebih dahulu untuk melihat hasil thresholding</p>
+
+            <button type="submit" class="btn glass-btn text-white" id="proses-btn" disabled>Proses</button>
+        </form>
+    </div>
+
+    <!-- preview gambar -->
+    {% if filename %}
+    <hr class="my-4">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <h5>Gambar Grayscale</h5>
+            <img src="/static/{{ filename }}" class="img-preview img-thumbnail mb-3">
+        </div>
+        <div class="col-md-6 text-center">
+            <h5>Hasil Threshold (Biner)</h5>
+            <img src="/static/threshold_result.jpg" class="img-preview img-thumbnail mb-3">
+        </div>
+    </div>
+    {% endif %}
+</div>
+<!-- end container -->
+
+
+<script> //supaya tulisan peringatan upload file hilang ketika gambar sudah diupload
+    const fileInput = document.getElementById('image-input');
+    const filenameHidden = document.getElementById('filename-hidden');
+    const btn = document.getElementById('proses-btn');
+    const warning = document.getElementById('warning-upload');
+
+    function toggleButton() {
+        const hasFile = fileInput && fileInput.files.length > 0;
+        const hasPrevFilename = filenameHidden !== null && filenameHidden.value.trim() !== '';
+
+        if (hasFile || hasPrevFilename) {
+            btn.removeAttribute('disabled'); //jika gambar sudah diupload, maka tombol proses masih menyala supaya mudah pakai slider
+            warning.classList.add('d-none');
+        } else {
+            btn.setAttribute('disabled', 'true');
+            warning.classList.remove('d-none');
+        }
+    }
+
+    fileInput.addEventListener('change', toggleButton);
+    window.addEventListener('load', toggleButton);
+</script>
+
+{% endblock %}

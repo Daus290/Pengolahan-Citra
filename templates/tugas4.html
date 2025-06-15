@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Tugas 4: Morfologi Lanjutan{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+    <div class="glass-box">
+        <h2 class="mb-4">Morfologi Lanjutan</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Upload Gambar</label>
+                <input class="form-control glass-input" type="file" name="image" id="image-input">
+            </div>
+
+            {% if filename %}
+            <div class="mb-3">
+                <label class="form-label">Nama Gambar Saat Ini</label>
+                <input class="form-control glass-input" name="filename" value="{{ filename }}" readonly>
+            </div>
+            {% endif %}
+
+
+            {% if filename %}
+            <input type="hidden" name="filename" value="{{ filename }}">
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label">Pilih Operasi</label>
+                <select class="form-select glass-input" name="operation">
+                    <option value="boundary" {% if operation == 'boundary' %}selected{% endif %}>Boundary Extraction</option>
+                    <option value="convex" {% if operation == 'convex' %}selected{% endif %}>Convex Hull</option>
+                    <option value="pruning" {% if operation == 'pruning' %}selected{% endif %}>Pruning</option>
+                    <option value="filling" {% if operation == 'filling' %}selected{% endif %}>Region Filling</option>
+                    <option value="skeleton" {% if operation == 'skeleton' %}selected{% endif %}>Skeletonization</option>
+                    <option value="thicken" {% if operation == 'thicken' %}selected{% endif %}>Thickening</option>
+                    <option value="thinning" {% if operation == 'thinning' %}selected{% endif %}>Thinning</option>
+                    <option value="opening" {% if operation == 'opening' %}selected{% endif %}>Opening</option>
+                    <option value="closing" {% if operation == 'closing' %}selected{% endif %}>Closing</option>
+                </select>
+            </div>
+
+            {% if operation == 'convex' %}
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" value="on" name="outline" id="outline-checkbox"
+                    {% if outline_only %}checked{% endif %}>
+                <label class="form-check-label" for="outline-checkbox">
+                    Tampilkan Outline Saja (Tidak Diisi)
+                </label>
+            </div>
+            {% endif %}
+
+            <p id="upload-message" class="text-white text-center mt-4">
+                Silakan upload gambar terlebih dahulu untuk melihat hasil morfologi.
+            </p>
+
+            <div>
+                <button type="submit" class="btn glass-btn text-white mt-2" id="proses-btn" disabled>Proses</button>
+            </div>
+        </form>
+    </div>
+
+    {% if filename %}
+    <hr class="my-4">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <h5 class="text-white">Gambar Asli</h5>
+            <img src="/static/{{ filename }}" class="img-preview img-thumbnail mb-3">
+        </div>
+        <div class="col-md-6 text-center">
+            <h5 class="text-white">Hasil {{ operation|capitalize }}</h5>
+            <img src="/static/morph_lanjutan_result.jpg" class="img-preview img-thumbnail mb-3">
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    const fileInput = document.getElementById('image-input');
+    const prosesBtn = document.getElementById('proses-btn');
+    const uploadMsg = document.getElementById('upload-message');
+
+    fileInput.addEventListener('change', function () {
+        if (this.files.length > 0) {
+            prosesBtn.removeAttribute('disabled');
+            if (uploadMsg) uploadMsg.style.display = 'none';
+        } else {
+            prosesBtn.setAttribute('disabled', 'true');
+        }
+    });
+
+    window.onload = function () {
+        const existingFilename = document.querySelector('input[name="filename"]');
+        if (existingFilename) {
+            prosesBtn.removeAttribute('disabled');
+            if (uploadMsg) uploadMsg.style.display = 'none';
+        }
+    };
+</script>
+
+{% endblock %}

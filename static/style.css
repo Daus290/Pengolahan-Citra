@@ -1,0 +1,111 @@
+/* Keseluruhan */
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: linear-gradient(135deg, #d6334c, #191157);
+    background-attachment: fixed;
+    font-family: 'Montserrat', sans-serif;
+    overflow: auto; /* supaya scroll di beranda hilang*/
+}
+
+
+/* Animasi Scroll Viewport Beranda*/
+body.no-scroll {
+    overflow: hidden;
+    transition: overflow 0.3s ease;
+}   
+
+
+/* Navbar */
+.nav-link:hover {
+    color: #ff873d;
+    text-decoration: underline;
+    transition: color 0.3s ease-in-out;
+}
+
+
+/* Tugas - Box Glass */
+.glass-box {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.glass-input, .glass-range, .glass-btn {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 0.4rem;
+}
+
+.glass-input::placeholder {
+    color: #eee;
+}
+
+.glass-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.form-label {
+    color: #f8f9fa;
+}
+
+h2, h5 {
+    color: #fff;
+}
+
+.img-preview {
+    max-width: 100%;
+    max-height: 600px;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+/* slider track */
+.glass-range::-webkit-slider-runnable-track {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2); /* warna jalur */
+    border-radius: 4px;
+}
+
+/* slider thumb - buat chrome/safari/edge */
+.glass-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #b076ff; /* ungu terang saat ditahan klik */
+    border: 2px solid white;
+    border-radius: 50%;
+    margin-top: -6px;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(176, 118, 255, 0.7);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.glass-range::-webkit-slider-thumb:hover {
+    background: #d1aaff;
+    transform: scale(1.5);
+}
+/* End Tugas - Box Glass */
+
+
+/* Option supaya tulisannya kelihatan */
+.glass-input option {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+/* Footer */
+.main-content {
+    min-height: calc(100vh - 100px); /* tinggi layar dikurangi tinggi navbar + footer, supaya tetap stick di pojok kanan */
+}
+

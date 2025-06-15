@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Tugas 3: Erosi dan Dilasi{% endblock %}
+{% block content %}
+
+<div class="container py-4">
+    <div class="glass-box">
+        <h2 class="mb-4">Erosi dan Dilasi</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Upload Gambar</label>
+                <input class="form-control glass-input" type="file" name="image" id="image-input">
+            </div>
+
+            {% if filename %}
+            <div class="mb-3">
+                <label class="form-label">Nama Gambar Saat Ini</label>
+                <input class="form-control glass-input" name="filename" value="{{ filename }}" readonly>
+            </div>
+            {% endif %}
+
+
+            {% if filename %}
+            <input type="hidden" name="filename" value="{{ filename }}">
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label">Pilih Operasi</label>
+                <select class="form-select glass-input" name="operation">
+                    <option value="erode" {% if operation == 'erode' %}selected{% endif %}>Erosi</option>
+                    <option value="dilate" {% if operation == 'dilate' %}selected{% endif %}>Dilasi</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Pilih Bentuk Kernel</label>
+                <select class="form-select glass-input" name="shape">
+                    <option value="rectangle" {% if shape == 'rectangle' %}selected{% endif %}>Persegi</option>
+                    <option value="ellipse" {% if shape == 'ellipse' %}selected{% endif %}>Lingkaran</option>
+                    <option value="triangle" {% if shape == 'triangle' %}selected{% endif %}>Segitiga</option>
+                </select>
+            </div>
+
+            <p id="upload-message" class="text-white text-center mt-4">
+                Silakan upload gambar terlebih dahulu untuk melihat hasil erosi dan dilasi.
+            </p>
+
+            <div>
+                <button type="submit" class="btn glass-btn text-white mt-2" id="proses-btn" disabled>Proses</button>
+            </div>
+        </form>
+    </div>
+
+    {% if filename %}
+    <hr class="my-4">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <h5 class="text-white">Gambar Asli</h5>
+            <img src="/static/{{ filename }}" class="img-preview img-thumbnail mb-3">
+        </div>
+        <div class="col-md-6 text-center">
+            <h5 class="text-white">Hasil {{ operation|capitalize }}</h5>
+            <img src="/static/morph_result.jpg" class="img-preview img-thumbnail mb-3">
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+  const fileInput = document.getElementById('image-input');
+  const prosesBtn = document.getElementById('proses-btn');
+  const uploadMsg = document.getElementById('upload-message');
+
+  fileInput.addEventListener('change', function () {
+    if (this.files.length > 0) {
+      prosesBtn.removeAttribute('disabled');
+      if (uploadMsg) uploadMsg.style.display = 'none';
+    } else {
+      prosesBtn.setAttribute('disabled', 'true');
+    }
+  });
+
+  // jika file sudah ada dari sebelumnya
+  window.onload = function () {
+    const existingFilename = document.querySelector('input[name="filename"]');
+    if (existingFilename) {
+      prosesBtn.removeAttribute('disabled');
+      if (uploadMsg) uploadMsg.style.display = 'none';
+    }
+  };
+</script>
+
+{% endblock %}
